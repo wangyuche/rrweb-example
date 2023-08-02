@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>按鈕範例</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>
+
+</head>
+
+<body>
+    <script>
+        var events = [];
+
+        var ws = new WebSocket("ws://localhost/wsplay");
+        var isopen = false;
+        function showMessage(message) {
+
+        }
+        ws.onopen = function () {
+            isopen = true;
+            ws.send("Message to send");
+        };
+        ws.onmessage = function (evt) {
+            var event = JSON.parse(evt.data);
+            events = event.events;
+            console.log(events);
+            
+            new rrwebPlayer({
+                target: document.body,
+                // 配置项
+                props: {
+                    events,
+                    autoPlay: true,
+                    UNSAFE_replayCanvas: true
+                },
+            });
+        };
+        ws.onclose = function () {
+            /*
+            new rrwebPlayer({
+                target: document.body,
+                // 配置项
+                props: {
+                    events,
+                    autoPlay: true
+                },
+            });*/
+        };
+    </script>
+</body>
+
+</html>
